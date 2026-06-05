@@ -26,8 +26,8 @@ impl SidecarProcess {
             .map(|p| p.to_string_lossy().to_string())
             .unwrap_or_default();
 
-        let mut child = Command::new(python)
-            .arg("-X")
+        let mut cmd = Command::new(python);
+        cmd.arg("-X")
             .arg("utf8")
             .arg("-u")
             .arg(entrypoint)
@@ -37,7 +37,18 @@ impl SidecarProcess {
             .env("PYTHONUNBUFFERED", "1")
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
-            .stderr(Stdio::inherit())
+            .stderr(Stdio::inherit());
+
+        // Windows: 不为 Python 子进程创建控制台窗口，否则 GUI 程序每 spawn 一个
+        // worker 就会弹出一个黑色 cmd 窗口（进程池有多个 worker 会弹多个）。
+        #[cfg(windows)]
+        {
+            use std::os::windows::process::CommandExt;
+            const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+            cmd.creation_flags(CREATE_NO_WINDOW);
+        }
+
+        let mut child = cmd
             .spawn()
             .map_err(|e| format!("Failed to spawn sidecar `{python} {entrypoint}` (PYTHONPATH={python_path}): {e}"))?;
 
