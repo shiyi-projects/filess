@@ -1,0 +1,75 @@
+name: Release (Windows)
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - name: Cargo cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: apps/desktop/src-tauri
+
+      - name: Cache Python Embeddable
+        id: cache-python
+        uses: actions/cache@v4
+        with:
+          path: apps/desktop/src-tauri/python-3.11.9-embed-amd64.zip
+          key: python-embed-win-3.11.9
+
+      - name: Install desktop dependencies
+        working-directory: apps/desktop
+        run: npm install
+
+      - name: Bundle Python Embeddable
+        shell: pwsh
+        run: .\scripts\bundle_python.ps1
+
+      - name: Build & Release (Tauri, tag push)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: tauri-apps/tauri-action@action-v0.6.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: apps/desktop
+          tagName: ${{ github.ref_name }}
+          releaseName: "AI File Organizer ${{ github.ref_name }}"
+          releaseBody: |
+            Auto-built from ${{ github.sha }}
+            Windows artifact: `.msi` / `.exe`
+          releaseDraft: false
+          prerelease: false
+          tauriScript: npm run tauri
+          args: --target x86_64-pc-windows-msvc
+
+      - name: Build only (manual dispatch, no release)
+        if: github.event_name == 'workflow_dispatch'
+        uses: tauri-apps/tauri-action@action-v0.6.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: apps/desktop
+          tauriScript: npm run tauri
+          args: --target x86_64-pc-windows-msvc

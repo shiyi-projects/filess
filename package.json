@@ -1,0 +1,16 @@
+{
+  "name": "ai-file-organizer-workspace",
+  "private": true,
+  "version": "0.1.8",
+  "license": "SEE LICENSE IN LICENSE",
+  "workspaces": [
+    "apps/desktop"
+  ],
+  "scripts": {
+    "desktop:dev": "npm.cmd --workspace apps/desktop run tauri:dev",
+    "desktop:build": "npm.cmd --workspace apps/desktop run tauri:build",
+    "desktop:check": "npm.cmd --workspace apps/desktop run check",
+    "release": "scripts\\release.bat",
+    "sidecar:test": "python -m pytest services/sidecar/tests"
+  }
+}

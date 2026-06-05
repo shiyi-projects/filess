@@ -1,0 +1,28 @@
+node_modules/
+dist/
+target/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+Thumbs.db
+*.log
+apps/desktop/src-tauri/gen/
+services/sidecar/.pytest_cache/
+services/sidecar/.mypy_cache/
+apps/desktop/src-tauri/python-runtime/
+python-*.zip
+
+# Claude Code 本地个人设置（权限/偏好），不应入库
+.claude/settings.local.json
+
+# Local SQLite store — contains user file paths / categories / content
+# excerpts. Must never be committed (privacy) and its -wal/-shm churn pollutes
+# git status on every run.
+data/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+

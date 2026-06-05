@@ -1,0 +1,28 @@
+@keyframes fadeIn     { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeUp     { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn    { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
+@keyframes slideRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes spin       { to { transform: rotate(360deg); } }
+@keyframes breathe {
+  0%, 100% { opacity: 0.5; }
+  50%      { opacity: 1; }
+}
+
+/* New: pulsing focus ring that radiates outward */
+@keyframes pulseRing {
+  0%   { box-shadow: 0 0 0 0 rgba(106, 167, 255, 0.55); }
+  70%  { box-shadow: 0 0 0 14px rgba(106, 167, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(106, 167, 255, 0); }
+}
+
+/* New: shimmer sweep across a progress bar / loading surface */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* New: subtle floating animation for hero icons */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}

@@ -1,0 +1,90 @@
+name: Release (macOS)
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build-macos:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: aarch64-apple-darwin
+            runner: macos-14      # Apple Silicon (native)
+          - target: x86_64-apple-darwin
+            runner: macos-14      # Apple Silicon (cross-compile, 不再等 Intel runner)
+
+    runs-on: ${{ matrix.runner }}
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Cargo cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: apps/desktop/src-tauri
+
+      - name: Cache Python standalone
+        id: cache-python
+        uses: actions/cache@v4
+        with:
+          path: apps/desktop/src-tauri/cpython-3.11.15+20260414-${{ matrix.target == 'aarch64-apple-darwin' && 'aarch64' || 'x86_64' }}-apple-darwin-install_only.tar.gz
+          key: python-standalone-macos-${{ matrix.target }}-3.11.15
+
+      - name: Install desktop dependencies
+        working-directory: apps/desktop
+        run: npm install
+
+      - name: Bundle Python standalone
+        shell: bash
+        run: |
+          chmod +x ./scripts/bundle_python_macos.sh
+          if [[ "${{ matrix.target }}" == "aarch64-apple-darwin" ]]; then
+            ./scripts/bundle_python_macos.sh aarch64
+          else
+            ./scripts/bundle_python_macos.sh x86_64
+          fi
+
+      - name: Build & Release (Tauri, tag push)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: tauri-apps/tauri-action@action-v0.6.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: apps/desktop
+          tagName: ${{ github.ref_name }}
+          releaseName: "AI File Organizer ${{ github.ref_name }}"
+          releaseBody: |
+            Auto-built from ${{ github.sha }}
+            macOS artifacts: `.dmg` / `.app.tar.gz`
+          releaseDraft: false
+          prerelease: false
+          tauriScript: npm run tauri
+          args: --target ${{ matrix.target }}
+
+      - name: Build only (manual dispatch, no release)
+        if: github.event_name == 'workflow_dispatch'
+        uses: tauri-apps/tauri-action@action-v0.6.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: apps/desktop
+          tauriScript: npm run tauri
+          args: --target ${{ matrix.target }}
