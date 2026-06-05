@@ -18,6 +18,9 @@ python-*.zip
 # Claude Code 本地个人设置（权限/偏好），不应入库
 .claude/settings.local.json
 
+# 营销/宣传文案等非代码资产，不入库
+marketing/
+
 # Local SQLite store — contains user file paths / categories / content
 # excerpts. Must never be committed (privacy) and its -wal/-shm churn pollutes
 # git status on every run.
