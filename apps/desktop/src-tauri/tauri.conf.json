@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "AI 文件整理工具",
+  "productName": "AIFileOrganizer",
   "version": "0.1.9",
   "identifier": "com.local.ai-file-organizer",
   "build": {
