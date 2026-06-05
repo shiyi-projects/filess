@@ -13,7 +13,6 @@ import { ReviewModal } from "./components/ReviewModal";
 import { SettingsDrawer } from "./components/SettingsDrawer";
 import { Sidebar } from "./components/Sidebar";
 import { PromptModal } from "./components/PromptModal";
-import { AppFooter } from "./components/AppFooter";
 import {
   loadBootstrapState,
   searchFiles,
@@ -420,8 +419,6 @@ export function App() {
             onUndo={handleUndo}
             onReclassify={handleReclassify}
           />
-
-          <AppFooter />
         </div>
 
         <StatsBar
