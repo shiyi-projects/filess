@@ -1,7 +1,7 @@
 {
   "name": "ai-file-organizer-workspace",
   "private": true,
-  "version": "0.1.9",
+  "version": "0.1.10",
   "license": "SEE LICENSE IN LICENSE",
   "workspaces": [
     "apps/desktop"
