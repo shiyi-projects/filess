@@ -58,11 +58,13 @@ jobs:
           releaseName: "AI File Organizer ${{ github.ref_name }}"
           releaseBody: |
             Auto-built from ${{ github.sha }}
-            Windows artifact: `.msi` / `.exe`
+            Windows artifact: `.exe` (NSIS installer)
           releaseDraft: false
           prerelease: false
           tauriScript: npm run tauri
-          args: --target x86_64-pc-windows-msvc
+          # 只打 NSIS(.exe) — WiX/MSI 的 light.exe 对内嵌 Python 资源 + 中文产品名
+          # 一直在 bundle 阶段失败，NSIS 更稳健且对用户更友好。
+          args: --target x86_64-pc-windows-msvc --bundles nsis
 
       - name: Build only (manual dispatch, no release)
         if: github.event_name == 'workflow_dispatch'
@@ -72,4 +74,4 @@ jobs:
         with:
           projectPath: apps/desktop
           tauriScript: npm run tauri
-          args: --target x86_64-pc-windows-msvc
+          args: --target x86_64-pc-windows-msvc --bundles nsis
