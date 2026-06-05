@@ -462,6 +462,39 @@ select.input { padding-right: var(--s-6); cursor: pointer; }
 .stats-bar__clickable:hover { background: var(--bg-hover); }
 
 /* ═══════════════════════════════════════════
+   App Footer (署名条：logo / by shiyi0x7f / 版本 / 链接)
+   ═══════════════════════════════════════════ */
+.app-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--s-4); flex-wrap: wrap;
+  margin-top: var(--s-8);
+  padding: var(--s-4) var(--s-2) 0;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 12px; color: var(--text-tertiary);
+}
+.app-footer__brand { display: flex; align-items: center; gap: var(--s-3); }
+.app-footer__logo {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: var(--r-sm);
+  background: var(--bg-elevated); border: 1px dashed var(--border-subtle);
+  font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
+  color: var(--text-tertiary); flex-shrink: 0;
+}
+.app-footer__by { font-weight: 600; color: var(--text-secondary); }
+.app-footer__version {
+  padding: 1px 6px; border-radius: var(--r-sm);
+  background: var(--bg-elevated); color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums; font-size: 11px;
+}
+.app-footer__links { display: flex; align-items: center; gap: var(--s-2); }
+.app-footer__link {
+  color: var(--text-secondary); font-size: 12px;
+  cursor: pointer; transition: color var(--duration-fast);
+}
+.app-footer__link:hover { color: var(--accent); }
+.app-footer__dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border-subtle); }
+
+/* ═══════════════════════════════════════════
    Empty State
    ═══════════════════════════════════════════ */
 .empty-state {
